@@ -3,13 +3,16 @@ const User = require('../models/user')
 class controllerPlaylist {
     static addPlaylist(req, res) {
         const track_id = req.params.id
-        const idUser = req.userLogin
+        const idUser = "5ccbc90c5bdbe824f3e8243b"
+        console.log('masuk cuy')
         User
             .findById(idUser)
             .then((user) => {
+                console.log('user ketemu cuy')
                 let isExist = user.playlist.indexOf(track_id) < 0
                 if (isExist) {
-                    user.playlist.push(req.track_id)
+                    user.playlist.push(track_id)
+                    console.log('masuk sini')
                     return user.save()
                 } else {
                     res.status(400).json({ error: 'You already have this track on your playlist' })
@@ -25,7 +28,7 @@ class controllerPlaylist {
 
     static deletePlaylist(req, res) {
         const track_id = req.params.id
-        const idUser = req.userLogin
+        const idUser = "5ccbc90c5bdbe824f3e8243b"
         User
             .findById(idUser)
             .then((user) => {
@@ -41,7 +44,7 @@ class controllerPlaylist {
     }
 
     static findAllPlaylist(req, res) {
-        const idUser = req.userLogin
+        const idUser = "5ccbc90c5bdbe824f3e8243b"
         User
             .findById(idUser)
             .then(data => {

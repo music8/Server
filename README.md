@@ -1,2 +1,2 @@
 # server
-Server dari Music8 Apps
+Server dari Music8 App

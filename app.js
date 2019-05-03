@@ -13,13 +13,8 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/',router)
 
-
-
-
-
-
-
-
+const EventController = require("./controllers/EventController.js")
+app.post("/upcoming", EventController.showEvents)
 
 app.listen(port,()=>{
     console.log(port)

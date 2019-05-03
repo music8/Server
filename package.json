@@ -13,11 +13,12 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/music8/server/issues"
+    "url": "https://github.com/music8/Server/issues"
   },
-  "homepage": "https://github.com/music8/server#readme",
+  "homepage": "https://github.com/music8/Server#readme",
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",

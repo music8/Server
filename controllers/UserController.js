@@ -1,8 +1,11 @@
-const { OAuth2Client } = require('google-auth-library');
+const {
+    OAuth2Client
+} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // const jwt = require('../helpers/jwt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const bcrypt = require('bcryptjs')
 
 class UserController {
     static googleSignIn(req, res) {
@@ -13,7 +16,9 @@ class UserController {
             })
             .then(ticket => {
                 let payload = ticket.getPayload()
-                let foundUser = User.findOne({ email: payload.email })
+                let foundUser = User.findOne({
+                    email: payload.email
+                })
 
                 return Promise.all([payload, foundUser])
 
@@ -34,9 +39,10 @@ class UserController {
                 const myToken = jwt.sign({
                     _id: user._id,
                     name: user.name,
-                    email: user.email,
-                    picture: user.picture
-                }, process.env.SECRET, { expiresIn: `1 day` })
+                    email: user.email
+                }, process.env.SECRET, {
+                    expiresIn: `1 day`
+                })
 
                 res.status(200).json({
                     token: myToken
@@ -47,42 +53,76 @@ class UserController {
             })
 
     }
-
-    // static googleSignIn(req, res) {
-    //     client.verifyIdToken({
-    //         idToken: req.headers.access_token,
-    //         audience: process.env.GOOGLE_CLIENT_ID
-    //     })
-    //         .then(ticket => {
-    //             const { name, email, picture } = ticket.getPayload()
-
-    //             let myToken = jwt.sign({ name, email, picture },
-    //                 process.env.SECRET, { expiresIn: `1 day` })
-
-    //             res.status(200).json({
-    //                 token: myToken,
-    //                 message: "berhasil",
-    //                 data: {
-    //                     name, email, picture
-    //                 }
-    //             })
-    //         })
-    //         .catch(err => {
-    //             res.status(500).json(err)
-    //         })
-    // }
-
-
-
     static create(req, res) {
-        const { name, email, picture } = req.body
-        User.create({ name, email, picture })
+        const {
+            name,
+            email,
+            password
+        } = req.body
+        const hash = bcrypt.hashSync(password, 8)
+        User
+            .create({
+                name,
+                password: hash,
+                email
+            })
             .then(user => {
-                res.status(200).json('user')
+                res.status(200).json(user)
             })
             .catch(err => {
-                res.status(500).json('err')
+                res.status(500).json(err)
             })
+    }
+
+    static regularLogin(req, res) {
+        let {
+            email,
+            password
+        } = req.body
+        User.findOne({
+                email
+            })
+            .then(user => {
+                console.log(user)
+                if (!user) {
+                    res.status(400).json({
+                        msg: 'Please check your input'
+                    })
+                } else {
+                    console.log(password);
+                    console.log(user.password);
+                    console.log(bcrypt.compareSync(password, user.password));
+
+
+
+                    if (bcrypt.compareSync(password, user.password)) {
+                        console.log('poppopopo')
+                        let token = jwt.sign({
+                            _id: user._id,
+                            name: user.name,
+                            email
+                        }, process.env.SECRET, {
+                            expiresIn: `1 day`
+                        })
+                        res.status(200).json({
+                            msg: 'You have successfully logged in!',
+                            token
+                        })
+                    } else {
+                        console.log('salah')
+                        res.status(400).json({
+                            msg: 'please check your input!'
+                        })
+                    }
+                }
+            })
+            .catch(err => {
+                res.status(500).json({
+                    msg: 'ERROR,',
+                    err
+                })
+            })
+
     }
 
     static findAll(req, res) {

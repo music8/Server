@@ -2,9 +2,9 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 const cors = require('cors')
-const router = require('./routes/index')
+const router = require('./routes/routes')
 mongoose.connect('mongodb://localhost/muzieeek',{useNewUrlParser:true})
 
 

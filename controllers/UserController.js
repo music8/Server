@@ -2,7 +2,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // const jwt = require('../helpers/jwt')
 const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const User = require('../models/user')
 
 class UserController {
     static googleSignIn(req, res) {
